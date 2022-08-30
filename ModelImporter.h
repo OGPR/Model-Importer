@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-
+#define MAX_LINE_LENGTH 1024
+#define MAX_LINES 1024
 
 int CharToIntDigit(char c)
 {
@@ -24,19 +25,19 @@ void Import_x3d(char* Filename)
     FILE *fp;
     fp = fopen(Filename, "r");
 
-    char line[1024][1024];
-    char TargetLine[1024];
+    char line[MAX_LINES][MAX_LINE_LENGTH];
+    char TargetLine[MAX_LINE_LENGTH];
 
     int NumLines = 0;
     int TargetLineNum = -1;
     while (1)
     {
-        char* LineReadRes = fgets(line[NumLines], 1024, fp);
+        char* LineReadRes = fgets(line[NumLines], MAX_LINE_LENGTH, fp);
         if(!LineReadRes)
             break;
 
         char c = 0;
-        for (int i = 0; i < 1024; ++i) 
+        for (int i = 0; i < MAX_LINE_LENGTH; ++i) 
         {
             c = line[NumLines][i];
             if (c == '\n') break;
