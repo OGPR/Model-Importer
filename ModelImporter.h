@@ -84,10 +84,7 @@ void Import_x3d(char* Filename, float* VertexArray)
                 float FracPart = 0;
 
                 // Reset the pointer
-                if (Minus)
-                    cp = &line[CurrLineNum][i + 8];
-                else
-                    cp = &line[CurrLineNum][i + 7];
+                cp = &line[CurrLineNum][i + 7 + Minus];
 
                 assert (*cp != ' ');
                 while (*cp != ' ')
