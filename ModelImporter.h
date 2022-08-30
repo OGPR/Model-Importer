@@ -28,34 +28,34 @@ void Import_x3d(char* Filename)
     char line[MAX_LINES][MAX_LINE_LENGTH];
     char TargetLine[MAX_LINE_LENGTH];
 
-    int NumLines = 0;
+    int CurrLineNum = 0;
     int TargetLineNum = -1;
     while (1)
     {
-        char* LineReadRes = fgets(line[NumLines], MAX_LINE_LENGTH, fp);
+        char* LineReadRes = fgets(line[CurrLineNum], MAX_LINE_LENGTH, fp);
         if(!LineReadRes)
             break;
 
         char c = 0;
         for (int i = 0; i < MAX_LINE_LENGTH; ++i) 
         {
-            c = line[NumLines][i];
+            c = line[CurrLineNum][i];
             if (c == '\n') break;
 
             if ( c == 'p' &&
-                 line[NumLines][i + 1] == 'o' &&
-                 line[NumLines][i + 2] == 'i' &&
-                 line[NumLines][i + 3] == 'n' &&
-                 line[NumLines][i + 4] == 't' &&
-                 line[NumLines][i + 5] == '=') 
+                 line[CurrLineNum][i + 1] == 'o' &&
+                 line[CurrLineNum][i + 2] == 'i' &&
+                 line[CurrLineNum][i + 3] == 'n' &&
+                 line[CurrLineNum][i + 4] == 't' &&
+                 line[CurrLineNum][i + 5] == '=') 
             {
-                if (line[NumLines][i + 6] != '"')
+                if (line[CurrLineNum][i + 6] != '"')
                 {
                     printf("Error in x3d file - expecting a \"\n");
                     return;
                 }
                 
-                char* cp = &line[NumLines][i + 7];
+                char* cp = &line[CurrLineNum][i + 7];
 
                 char Length_IntPart = 0; 
                 char Length_FracPart = 0; 
@@ -85,9 +85,9 @@ void Import_x3d(char* Filename)
 
                 // Reset the pointer
                 if (Minus)
-                    cp = &line[NumLines][i + 8];
+                    cp = &line[CurrLineNum][i + 8];
                 else
-                    cp = &line[NumLines][i + 7];
+                    cp = &line[CurrLineNum][i + 7];
 
 
                 assert (*cp != ' ');
@@ -142,7 +142,7 @@ void Import_x3d(char* Filename)
 
 
 
-                TargetLineNum = NumLines;
+                TargetLineNum = CurrLineNum;
                 break;
             }
 
@@ -150,7 +150,7 @@ void Import_x3d(char* Filename)
 
          if (TargetLineNum >= 0) break;
 
-         ++NumLines;
+         ++CurrLineNum;
     }
 
 
