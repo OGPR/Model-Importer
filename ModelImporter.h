@@ -93,15 +93,11 @@ void Import_x3d(char* Filename)
 
 
                 assert (*cp != ' ');
-                printf("Length of int part %d\n", Length_IntPart);
-                printf("%c\n", *cp);
-                printf("%d\n", CharToIntDigit(*cp));
                 while (*cp != '.')
                 {
                     for (char i = Length_IntPart - 1; i > -1; --i)
                     {
                         IntegerPart += CharToIntDigit(*cp) * pow(10, i);
-                        printf("Curr int part, %f", IntegerPart);
                         ++cp;
                     }
                 }
@@ -109,13 +105,11 @@ void Import_x3d(char* Filename)
                 if (Minus)
                     IntegerPart *= -1;
 
-                printf("Integer part %f\n", IntegerPart);
 
                 
                 ++cp;
                 float FracPart = 0;
 
-                printf("Length of frac part %d\n", Length_FracPart);
                 while (*cp != ' ')
                 {
                     for (char i = Length_FracPart - 1; i > -1; --i)
@@ -125,11 +119,8 @@ void Import_x3d(char* Filename)
                     }
                 }
 
-                printf("Frac part %f\n", FracPart);
                 FracPart /= pow(10, Length_FracPart);
-                printf("Frac part %f\n", FracPart);
 
-                printf("Int part %f\n", IntegerPart);
                 float FinalNum = 0;
                 if (Minus)
                     FinalNum = IntegerPart - FracPart;
@@ -157,10 +148,9 @@ void Import_x3d(char* Filename)
 
 
 
-    //printf("%s\n", line[TargetLineNum]);
 
     printf("\n");
-    //printf("All good\n");
+    printf("Finished");
 
 
 }
