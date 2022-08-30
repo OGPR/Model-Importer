@@ -102,10 +102,6 @@ void Import_x3d(char* Filename)
                     }
                 }
 
-                if (Minus)
-                    IntegerPart *= -1;
-
-
                 
                 ++cp;
                 float FracPart = 0;
@@ -121,19 +117,12 @@ void Import_x3d(char* Filename)
 
                 FracPart /= pow(10, Length_FracPart);
 
-                float FinalNum = 0;
+                float FinalNum = IntegerPart + FracPart;
                 if (Minus)
-                    FinalNum = IntegerPart - FracPart;
-                else
-                    FinalNum = IntegerPart + FracPart;
+                    FinalNum *= -1; ;
 
 
                 printf("Final Num %f\n", FinalNum);
-
-
-
-
-
 
                 TargetLineNum = CurrLineNum;
                 break;
