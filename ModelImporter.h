@@ -57,63 +57,70 @@ void Import_x3d(char* Filename, float* VertexArray)
                     return;
                 }
                 
-                ++cp;
-
-                char Length_IntPart = 0; 
-                char Length_FracPart = 0; 
-                
-                int FracPartSwitch = 0;
-                int Minus = 0;
-                // First pass - get the length of the vertex coordinate
-                while (*cp != ' ')
+                cp = &line[CurrLineNum][i + 6];
+                while (*++cp != '"')
                 {
-                    if (*cp == '-')
-                       Minus = 1;
-                    else if (!FracPartSwitch && *cp != '.')
-                        ++Length_IntPart;
-                    else if (!FracPartSwitch && *cp == '.')
-                        FracPartSwitch = 1;
-                    else if (FracPartSwitch)
-                        ++Length_FracPart;
-                        
-                    ++cp;
+
+                    char* Base_cp = cp;
+
+                    printf("Char is %c\n", *cp);
+                    char Length_IntPart = 0; 
+                    char Length_FracPart = 0; 
+                    
+                    int FracPartSwitch = 0;
+                    int Minus = 0;
+                    // First pass - get the length of the vertex coordinate
+                    while (*cp != ' ')
+                    {
+                        if (*cp == '-')
+                           Minus = 1;
+                        else if (!FracPartSwitch && *cp != '.')
+                            ++Length_IntPart;
+                        else if (!FracPartSwitch && *cp == '.')
+                            FracPartSwitch = 1;
+                        else if (FracPartSwitch)
+                            ++Length_FracPart;
+                            
+                        ++cp;
+                    }
+
+                    // Second pass - create the number  
+                    float IntegerPart = 0;
+                    float FracPart = 0;
+
+                    // Reset the pointer
+                    if (Minus)
+                        cp = Base_cp + 1;
+                    else
+                        cp = Base_cp;
+
+                    assert (*cp != ' ');
+                    while (*cp != ' ')
+                    {
+                        // Integer part
+                        while (*cp != '.')
+                            for (char i = Length_IntPart - 1; i > -1; --i)
+                                IntegerPart += CharToIntDigit(*cp++) * pow(10, i);
+
+                        // Fractional part
+                        ++cp;
+                        for (char i = Length_FracPart - 1; i > -1; --i)
+                            FracPart += CharToIntDigit(*cp++) * pow(10, i);
+                    }
+
+
+                    FracPart /= pow(10, Length_FracPart);
+
+                    float FinalNum = IntegerPart + FracPart;
+                    if (Minus)
+                        FinalNum *= -1; ;
+
+                    *VertexArray++ = FinalNum;
+
+                    TargetLineNum = CurrLineNum;
+
                 }
 
-                // Second pass - create the number  
-                float IntegerPart = 0;
-                float FracPart = 0;
-
-                // Reset the pointer
-                cp = &line[CurrLineNum][i + 7 + Minus];
-
-                assert (*cp != ' ');
-                while (*cp != ' ')
-                {
-                    // Integer part
-                    while (*cp != '.')
-                        for (char i = Length_IntPart - 1; i > -1; --i)
-                            IntegerPart += CharToIntDigit(*cp++) * pow(10, i);
-
-                    // Fractional part
-                    ++cp;
-                    for (char i = Length_FracPart - 1; i > -1; --i)
-                        FracPart += CharToIntDigit(*cp++) * pow(10, i);
-                }
-
-
-                FracPart /= pow(10, Length_FracPart);
-
-                float FinalNum = IntegerPart + FracPart;
-                if (Minus)
-                    FinalNum *= -1; ;
-
-
-                *VertexArray = FinalNum;
-                printf("Final Num %f\n", *VertexArray);
-
-
-                TargetLineNum = CurrLineNum;
-                break;
             }
 
          }

@@ -3,9 +3,9 @@
 
 int main()
 {
-    float VertexArray[1];
+    float VertexArray[9];
     Import_x3d("Triangle.x3d", VertexArray);
-    for (int i = 0; i < 1; ++i)
-        printf("Coord is %f\n", VertexArray[0]);
+    for (int i = 0; i < 9; ++i)
+        printf("Coord is %f\n", VertexArray[i]);
     return 0;
 }
