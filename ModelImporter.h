@@ -94,21 +94,13 @@ void Import_x3d(char* Filename, float* VertexArray)
                 {
                     // Integer part
                     while (*cp != '.')
-                    {
                         for (char i = Length_IntPart - 1; i > -1; --i)
-                        {
-                            IntegerPart += CharToIntDigit(*cp) * pow(10, i);
-                            ++cp;
-                        }
-                    }
+                            IntegerPart += CharToIntDigit(*cp++) * pow(10, i);
 
                     // Fractional part
                     ++cp;
                     for (char i = Length_FracPart - 1; i > -1; --i)
-                    {
-                        FracPart += CharToIntDigit(*cp) * pow(10, i);
-                        ++cp;
-                    }
+                        FracPart += CharToIntDigit(*cp++) * pow(10, i);
                 }
 
 
