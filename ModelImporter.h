@@ -64,7 +64,7 @@ void Import_x3d(char* Filename)
                 
                 int FracPartSwitch = 0;
                 int Minus = 0;
-                // First pass - get the length
+                // First pass - get the length of the vertex coordinate
                 while (*cp != ' ')
                 {
                     if (*cp == '-')
@@ -72,18 +72,16 @@ void Import_x3d(char* Filename)
                     else if (!FracPartSwitch && *cp != '.')
                         ++Length_IntPart;
                     else if (!FracPartSwitch && *cp == '.')
-                    {
                         FracPartSwitch = 1;
-                    }
                     else if (FracPartSwitch)
                         ++Length_FracPart;
                         
                     ++cp;
                 }
 
-                // Second pass - populate the parts
-
+                // Second pass - create the number  
                 float IntegerPart = 0;
+                float FracPart = 0;
 
                 // Reset the pointer
                 if (Minus)
@@ -91,29 +89,28 @@ void Import_x3d(char* Filename)
                 else
                     cp = &line[CurrLineNum][i + 7];
 
-
                 assert (*cp != ' ');
-                while (*cp != '.')
-                {
-                    for (char i = Length_IntPart - 1; i > -1; --i)
-                    {
-                        IntegerPart += CharToIntDigit(*cp) * pow(10, i);
-                        ++cp;
-                    }
-                }
-
-                
-                ++cp;
-                float FracPart = 0;
-
                 while (*cp != ' ')
                 {
+                    // Integer part
+                    while (*cp != '.')
+                    {
+                        for (char i = Length_IntPart - 1; i > -1; --i)
+                        {
+                            IntegerPart += CharToIntDigit(*cp) * pow(10, i);
+                            ++cp;
+                        }
+                    }
+
+                    // Fractional part
+                    ++cp;
                     for (char i = Length_FracPart - 1; i > -1; --i)
                     {
                         FracPart += CharToIntDigit(*cp) * pow(10, i);
                         ++cp;
                     }
                 }
+
 
                 FracPart /= pow(10, Length_FracPart);
 
