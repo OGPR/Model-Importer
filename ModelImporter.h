@@ -36,26 +36,28 @@ void Import_x3d(char* Filename)
         if(!LineReadRes)
             break;
 
-        char c = 0;
+        char* cp = NULL;
         for (int i = 0; i < MAX_LINE_LENGTH; ++i) 
         {
-            c = line[CurrLineNum][i];
-            if (c == '\n') break;
+            cp = &line[CurrLineNum][i];
+            assert(cp);
 
-            if ( c == 'p' &&
-                 line[CurrLineNum][i + 1] == 'o' &&
-                 line[CurrLineNum][i + 2] == 'i' &&
-                 line[CurrLineNum][i + 3] == 'n' &&
-                 line[CurrLineNum][i + 4] == 't' &&
-                 line[CurrLineNum][i + 5] == '=') 
+            if (*cp == '\n') break;
+
+            if ( *cp == 'p' &&
+                 *++cp == 'o' &&
+                 *++cp  == 'i' &&
+                 *++cp == 'n' &&
+                 *++cp == 't' &&
+                 *++cp == '=') 
             {
-                if (line[CurrLineNum][i + 6] != '"')
+                if (*++cp != '"')
                 {
                     printf("Error in x3d file - expecting a \"\n");
                     return;
                 }
                 
-                char* cp = &line[CurrLineNum][i + 7];
+                ++cp;
 
                 char Length_IntPart = 0; 
                 char Length_FracPart = 0; 
