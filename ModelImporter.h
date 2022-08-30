@@ -20,7 +20,7 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-void Import_x3d(char* Filename)
+void Import_x3d(char* Filename, float* VertexArray)
 {
     FILE *fp;
     fp = fopen(Filename, "r");
@@ -119,7 +119,9 @@ void Import_x3d(char* Filename)
                     FinalNum *= -1; ;
 
 
-                printf("Final Num %f\n", FinalNum);
+                *VertexArray = FinalNum;
+                printf("Final Num %f\n", *VertexArray);
+
 
                 TargetLineNum = CurrLineNum;
                 break;
@@ -136,7 +138,7 @@ void Import_x3d(char* Filename)
 
 
     printf("\n");
-    printf("Finished");
+    printf("Finished\n");
 
 
 }
