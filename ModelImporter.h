@@ -31,7 +31,7 @@ void Import_x3d(char* Filename, float** VertexArray)
 
     float VertexArray_Internal[100];
     int CurrLineNum = 0;
-    int TargetLineNum = -1;
+    int TargetLineCount = 0;
     int NumVertices = 0;
     while (1)
     {
@@ -54,6 +54,8 @@ void Import_x3d(char* Filename, float** VertexArray)
                  *++cp == 't' &&
                  *++cp == '=') 
             {
+                ++TargetLineCount;
+
                 if (*++cp != '"')
                 {
                     printf("Error in x3d file - expecting a \"\n");
@@ -120,15 +122,14 @@ void Import_x3d(char* Filename, float** VertexArray)
                     VertexArray_Internal[NumVertices] = FinalNum;
                     ++NumVertices;
 
-                    TargetLineNum = CurrLineNum;
-
                 }
 
             }
 
          }
 
-         if (TargetLineNum >= 0) break;
+        
+         if (TargetLineCount == 2) break;
 
          ++CurrLineNum;
     }

@@ -7,7 +7,7 @@ int main()
     Import_x3d("Triangle.x3d", &VertexArray);
 
     assert(VertexArray);
-    for (int i = 0; i < 9; ++i)
+    for (int i = 0; i < 15; ++i)
         printf("Coord is %f\n", VertexArray[i]);
 
     free(VertexArray);
