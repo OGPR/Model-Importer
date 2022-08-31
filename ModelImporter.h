@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
+#include <stdlib.h>
 #define MAX_LINE_LENGTH 1024
 #define MAX_LINES 1024
 
@@ -20,7 +21,7 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-void Import_x3d(char* Filename, float* VertexArray)
+void Import_x3d(char* Filename, float** VertexArray)
 {
     FILE *fp;
     fp = fopen(Filename, "r");
@@ -28,8 +29,10 @@ void Import_x3d(char* Filename, float* VertexArray)
     char line[MAX_LINES][MAX_LINE_LENGTH];
     char TargetLine[MAX_LINE_LENGTH];
 
+    float VertexArray_Internal[100];
     int CurrLineNum = 0;
     int TargetLineNum = -1;
+    int NumVertices = 0;
     while (1)
     {
         char* LineReadRes = fgets(line[CurrLineNum], MAX_LINE_LENGTH, fp);
@@ -63,7 +66,6 @@ void Import_x3d(char* Filename, float* VertexArray)
 
                     char* Base_cp = cp;
 
-                    printf("Char is %c\n", *cp);
                     char Length_IntPart = 0; 
                     char Length_FracPart = 0; 
                     
@@ -115,7 +117,8 @@ void Import_x3d(char* Filename, float* VertexArray)
                     if (Minus)
                         FinalNum *= -1; ;
 
-                    *VertexArray++ = FinalNum;
+                    VertexArray_Internal[NumVertices] = FinalNum;
+                    ++NumVertices;
 
                     TargetLineNum = CurrLineNum;
 
@@ -133,10 +136,15 @@ void Import_x3d(char* Filename, float* VertexArray)
 
 
 
+    *VertexArray = (float*)calloc(NumVertices, sizeof(float));
+    for (int i = 0; i < NumVertices; ++i)
+        (*VertexArray)[i] = VertexArray_Internal[i];
+
+
     printf("\n");
+    printf("Number of vertices %d\n", NumVertices);
     printf("Finished\n");
 
 
 }
-
 
