@@ -134,18 +134,12 @@ void Import_x3d(char* Filename, float** VertexArray)
          ++CurrLineNum;
     }
 
-
+    fclose(fp);
 
 
     *VertexArray = (float*)calloc(NumVertices, sizeof(float));
     for (int i = 0; i < NumVertices; ++i)
         (*VertexArray)[i] = VertexArray_Internal[i];
-
-
-    printf("\n");
-    printf("Number of vertices %d\n", NumVertices);
-    printf("Finished\n");
-
 
 }
 
