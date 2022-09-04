@@ -4,6 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 #define MAX_LINE_LENGTH 1024
 #define MAX_LINES 1024
 #define MODEL_IMPORTER_SUCCESS 0
