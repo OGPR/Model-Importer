@@ -3,8 +3,17 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
+#include <unistd.h>
 #define MAX_LINE_LENGTH 1024
 #define MAX_LINES 1024
+#define MODEL_IMPORTER_SUCCESS 0
+enum E_MODEL_IMPORTER_ERROR_CODE
+{
+    MODEL_IMPORTER_ERROR_CODE_UNSET = -1,
+    MODEL_IMPORTER_GETCWD_ERROR = 2,
+    MODEL_IMPORTER_FILE_NOT_FOUND_ERROR = 3,
+    MODEL_IMPORTER_X3D_FILE_FORMAT_ERROR = 4
+}MODEL_IMPORTER_ERROR_CODE;
 
 int CharToIntDigit(char c)
 {
@@ -21,10 +30,23 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-void Import_x3d(char* Filename, float** VertexArray)
+int Import_x3d(char* Filename, float** VertexArray)
 {
+    MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_ERROR_CODE_UNSET;
     FILE *fp;
     fp = fopen(Filename, "r");
+    if (!fp)
+    {
+        char cwd[PATH_MAX];
+        if (!getcwd(cwd, sizeof(cwd)))
+        {
+            MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_GETCWD_ERROR;
+            return MODEL_IMPORTER_ERROR_CODE;
+        }
+        printf("No file named %s found in %s\n", Filename, cwd);
+        MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_FILE_NOT_FOUND_ERROR;
+        return MODEL_IMPORTER_ERROR_CODE;
+    }
 
     char line[MAX_LINES][MAX_LINE_LENGTH];
     char TargetLine[MAX_LINE_LENGTH];
@@ -59,7 +81,8 @@ void Import_x3d(char* Filename, float** VertexArray)
                 if (*++cp != '"')
                 {
                     printf("Error in x3d file - expecting a \"\n");
-                    return;
+                    MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_X3D_FILE_FORMAT_ERROR;
+                    return MODEL_IMPORTER_ERROR_CODE;
                 }
                 
                 cp = &line[CurrLineNum][i + 6];
@@ -140,6 +163,8 @@ void Import_x3d(char* Filename, float** VertexArray)
     *VertexArray = (float*)calloc(NumVertices, sizeof(float));
     for (int i = 0; i < NumVertices; ++i)
         (*VertexArray)[i] = VertexArray_Internal[i];
+
+    return MODEL_IMPORTER_SUCCESS;
 
 }
 
