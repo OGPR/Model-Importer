@@ -31,7 +31,7 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-int Import_x3d(char* Filename, float** VertexArray)
+int Import_x3d(char* Filename, float** VertexArray, int** NumPosCoord, int** NumTexCoord)
 {
     MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_ERROR_CODE_UNSET;
     FILE *fp;
@@ -55,6 +55,8 @@ int Import_x3d(char* Filename, float** VertexArray)
     float VertexArray_Internal[100];
     int CurrLineNum = 0;
     int TargetLineCount = 0;
+    int PositionCoordLineLength = 0;
+    int TextureCoordLineLength = 0;
     int NumVertices = 0;
     while (1)
     {
@@ -89,6 +91,8 @@ int Import_x3d(char* Filename, float** VertexArray)
                 cp = &line[CurrLineNum][i + 6];
                 while (*++cp != '"')
                 {
+                    if (TargetLineCount == 1) ++PositionCoordLineLength;
+                    if (TargetLineCount == 2) ++TextureCoordLineLength;
 
                     char* Base_cp = cp;
 
@@ -164,6 +168,13 @@ int Import_x3d(char* Filename, float** VertexArray)
     *VertexArray = (float*)calloc(NumVertices, sizeof(float));
     for (int i = 0; i < NumVertices; ++i)
         (*VertexArray)[i] = VertexArray_Internal[i];
+
+    *NumPosCoord = (int*)calloc(1, sizeof(int));
+    *NumTexCoord = (int*)calloc(1, sizeof(int));
+
+    **NumPosCoord = PositionCoordLineLength / 3;
+    **NumTexCoord = TextureCoordLineLength / 2;
+
 
     return MODEL_IMPORTER_SUCCESS;
 
