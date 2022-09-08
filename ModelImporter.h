@@ -31,7 +31,7 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-int Import_x3d(char* Filename, float** VertexArray, int** NumPosCoord, int** NumTexCoord)
+int Import_x3d(char* Filename, float** VertexArray, int** NumVertex, int** NumTexCoord)
 {
     MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_ERROR_CODE_UNSET;
     FILE *fp;
@@ -169,10 +169,10 @@ int Import_x3d(char* Filename, float** VertexArray, int** NumPosCoord, int** Num
     for (int i = 0; i < NumVertices; ++i)
         (*VertexArray)[i] = VertexArray_Internal[i];
 
-    *NumPosCoord = (int*)calloc(1, sizeof(int));
+    *NumVertex = (int*)calloc(1, sizeof(int));
     *NumTexCoord = (int*)calloc(1, sizeof(int));
 
-    **NumPosCoord = PositionCoordLineLength / 3;
+    **NumVertex = PositionCoordLineLength / 3;
     **NumTexCoord = TextureCoordLineLength / 2;
 
 
