@@ -31,7 +31,12 @@ int CharToIntDigit(char c)
     else return -999;
 }
 
-int Import_x3d(char* Filename, float** VertexArray, int** NumVertex, int** NumTexCoord)
+int Import_x3d(char* Filename,
+        float** VertexArray,
+        int** NumVertex,
+        int** NumTexCoord,
+        unsigned int** ModelIndices,
+        unsigned int** ModelIndexArray)
 {
     MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_ERROR_CODE_UNSET;
     FILE *fp;
@@ -58,6 +63,8 @@ int Import_x3d(char* Filename, float** VertexArray, int** NumVertex, int** NumTe
     int PositionCoordLineLength = 0;
     int TextureCoordLineLength = 0;
     int NumVertices = 0;
+    int CoordIndexLineFound = 0;
+    unsigned int NumberOfIndices = 0;
     while (1)
     {
         char* LineReadRes = fgets(line[CurrLineNum], MAX_LINE_LENGTH, fp);
@@ -71,6 +78,66 @@ int Import_x3d(char* Filename, float** VertexArray, int** NumVertex, int** NumTe
             assert(cp);
 
             if (*cp == '\n') break;
+
+            if (!CoordIndexLineFound &&
+                *cp == 'c'           &&
+                *(cp + 1) == 'o'     && 
+                *(cp + 2) == 'o'     && 
+                *(cp + 3) == 'r'     && 
+                *(cp + 4) == 'd'     && 
+                *(cp + 5) == 'I'     && 
+                *(cp + 6) == 'n'     && 
+                *(cp + 7) == 'd'     && 
+                *(cp + 8) == 'e'     && 
+                *(cp + 9) == 'x'     && 
+                *(cp + 10) == '='     )
+            {
+                CoordIndexLineFound = 1;
+
+                if (*(cp + 11) != '"')
+                {
+                    printf("Error in x3d file - expecting a \"\n");
+                    MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_X3D_FILE_FORMAT_ERROR;
+                    return MODEL_IMPORTER_ERROR_CODE;
+                }
+
+                char* CurrChar = cp + 11;
+                char* CurrCharOriginal = cp + 11;
+
+                // First pass - get the number of indices
+                while (*++CurrChar != '-')
+                    if(*CurrChar != ' ')
+                        ++NumberOfIndices;
+
+
+                // Reset curr char pointer
+                CurrChar = CurrCharOriginal;
+
+                // Create index array based on number of indices
+                if (NumberOfIndices == 4) // We have a rectangle
+                    NumberOfIndices = 6;  
+
+                *ModelIndices = (unsigned int*)calloc(1, sizeof(unsigned int));
+                **ModelIndices = NumberOfIndices;
+                *ModelIndexArray = (unsigned int*)calloc(NumberOfIndices, sizeof(unsigned int));
+
+                // Second pass - populate index array
+                int i = 0;
+                while (*++CurrChar != '-')
+                    if  (*CurrChar != ' ')
+                        (*ModelIndexArray)[i++] = CharToIntDigit(*CurrChar);
+
+                // Handle non-triangle
+                // Rectangle
+                if (NumberOfIndices == 6)
+                {
+                    unsigned int FinalIndex = (*ModelIndexArray)[3];
+                    (*ModelIndexArray)[3] = (*ModelIndexArray)[0];
+                    (*ModelIndexArray)[4] = FinalIndex;
+                    (*ModelIndexArray)[5] = (*ModelIndexArray)[2];
+                }
+            }
+
 
             if ( *cp == 'p' &&
                  *++cp == 'o' &&
