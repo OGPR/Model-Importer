@@ -36,7 +36,8 @@ int Import_x3d(char* Filename,
         int** NumVertex,
         int** NumTexCoord,
         unsigned int** ModelIndices,
-        unsigned int** ModelIndexArray)
+        unsigned int** ModelIndexArray,
+        unsigned int** ModelTexIndexArray)
 {
     MODEL_IMPORTER_ERROR_CODE = MODEL_IMPORTER_ERROR_CODE_UNSET;
     FILE *fp;
